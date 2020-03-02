@@ -10,4 +10,5 @@ Client folder contains HTML file for clients to connect to.
 
 Todo:
 - Implement en passant, castling, and pawn upgrades
-- Implement separate client connections keeping separate board states and how clients can connect to already existing board states
+- Implement separate client connections keeping separate board states
+- Implement a way for clients to connect to already existing board states
