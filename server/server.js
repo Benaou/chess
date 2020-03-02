@@ -178,55 +178,7 @@ http.createServer((request, response) => { //simple http web server to host the 
 		console.error(err);
 	});
 	if(request.url === '/') {
-		fs.readFile('index.html', (err, data) => {
-			response.writeHead(200, {'Content-Type': 'text/html'});
-			response.write(data);
-			response.end();
-		});
-	} else if(request.url.startsWith('/tetris/')) {
-		if(request.url.includes('..')) {
-			response.writeHead(403);
-			resposne.end();
-		} else {
-			try {
-				fs.readFile('..' + request.url, (err, data) => {
-				response.writeHead(200, {'Content-Type': 'text/html'});
-				response.write(data);
-				response.end();
-				});
-			}
-			catch(e) {
-				response.writeHead(404);
-				response.end();
-				console.log(e);
-			}
-		}
-	} else if(request.url === '/snake') {
-			fs.readFile('../snake.html', (err, data) => {
-			response.writeHead(200, {'Content-Type': 'text/html'});
-			response.write(data);
-			response.end();
-		});
-	} else if(request.url.startsWith('/minesweeper')) {
-		if(request.url.includes('..')) {
-			response.writeHead(403);
-			resposne.end();
-		} else {
-			try {
-				fs.readFile('..' + request.url, (err, data) => {
-				//response.writeHead(200, {'Content-Type': 'text/html'});
-				response.write(data);
-				response.end();
-				});
-			}
-			catch(e) {
-				response.writeHead(404);
-				response.end();
-				console.log(e);
-			}
-		}
-	} else if(request.url === '/chess') {
-			fs.readFile('../chess/multiplayer_chess.html', (err, data) => {
+		fs.readFile('../client/multiplayer_chess.html', (err, data) => {
 			response.writeHead(200, {'Content-Type': 'text/html'});
 			response.write(data);
 			response.end();
