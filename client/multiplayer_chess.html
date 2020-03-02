@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Chess</title>
+<script>
+/*
+
+TODO:
+- Mull over how to resolve scenario where using en passant can resolve check
+- Pawn upgrades
+
+List of notation:
+K = King
+Q = Queen
+B = Bishop
+R = Rook
+N = Knight
+
+x = takes or captures
++ = checked
+(not equals symbol) = checkmate
+=Q  = pawn promotion
+O-O = castles on King's side
+O-O-O = castles on Queen's side
+e.p. = en passant
+
+Unicode 
+2654 = white king
+2655 = white queen
+2656 = white rook
+2657 = white bishop
+2658 = white knight
+2659 = white pawn
+
+265A = black king
+265B = black queen
+265C = black rook
+265D = black bishop
+265E = black knight
+265F = black pawn
+
+*/
+
+var canvas, ctx, ws, boardState;
+var size = 80;
+
+function getBoardId(boardX, boardY) {
+	return boardX+8*boardY;
+}
+
+function getBoardCoord(boardId) {
+	return [boardId%8, Math.floor(boardId/8)];
+}
+
+function drawBoard() {
+	ctx.globalAlpha = 1;
+	for(let i=0; i<8; i++) {
+		for(let j=0; j<8; j++) {
+			if((i+j)%2) {
+				ctx.fillStyle='lightgray';
+			} else {
+				ctx.fillStyle='white';
+			}
+			ctx.fillRect(i*size, j*size, size, size);
+		}
+		//ctx.fillStyle='black';
+		//ctx.fillText(String.fromCharCode(65+i), i*size, 9*size); 
+	}
+	ctx.fillStyle='black';
+	ctx.strokeRect(0,0,8*size,8*size);
+	drawPieces();
+}
+
+function drawPieces(board=boardState) {
+	var vOffset = Math.floor(size*.866); //used to center the chess unicode onto the board
+	ctx.globalAlpha = 1;
+	ctx.fillStyle="black";
+	ctx.font = size + 'px serif';
+	for(var i=0; i<64; i++) {
+		let id = board[i];
+		[boardX,boardY] = getBoardCoord(i);
+		ctx.fillText(String.fromCharCode(id?(0x2650+id):0x20), size*boardX, vOffset+size*boardY);
+	}
+}
+
+function highlightSpot(x,y) {
+	ctx.globalAlpha = 0.5;
+	ctx.fillStyle="yellow";
+	ctx.fillRect(x*size, y*size, size, size);
+}
+
+function handleClick(e) {
+	let boardX = Math.floor(e.offsetX/size);
+	let boardY = Math.floor(e.offsetY/size);
+	if(e.which == 1) { //left click
+		drawBoard();
+		boardId = getBoardId(boardX,boardY);
+		ws.send(
+			JSON.stringify(
+				{'type':'click',
+				'data':boardId
+				}
+			)
+		);
+	}
+}
+
+window.onload = function() {
+	canvas = document.getElementById('canvas');
+	canvas.width = size*8;
+	canvas.height = size*8;
+	//document.getElementById('log').style.height = canvas.height+"px";
+	ctx = canvas.getContext('2d');
+	boardState = new Array(81);
+	boardState.fill(0);
+	drawBoard();
+	ws = new WebSocket('ws://localhost:8124/');
+	ws.onerror = function(e) {
+		console.error(e);
+	}
+	ws.onmessage = (e) => {
+		console.log(e.data);
+		message = JSON.parse(e.data);
+		if(message.type == 'board') {
+			boardState = message.data;
+			drawBoard();
+		} else if(message.type == 'highlight') {
+			let x,y;
+			for(boardId of message.data) {
+				[x,y] = getBoardCoord(boardId);
+				highlightSpot(x,y);
+			}
+		}
+	}
+	canvas.addEventListener('mousedown', handleClick);
+}
+
+</script>
+</head>
+<body>
+<canvas id="canvas" style="float: left"></canvas><!--<iframe id="log" style="float: left"></iframe>-->
+</body>
+</html>
