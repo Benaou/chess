@@ -19,7 +19,7 @@ Unicode
 Pieces are encoded by the last hexadecimal digit for simplicity (add 0x2650 to get unicode in chess client)
 */
 
-const EMPTY_SPOT = EMPTY_SPACE;
+const EMPTY_SPOT = 0x0;
 
 const WHITE_KING = 0x2654;
 const WHITE_QUEEN = 0x2655;
