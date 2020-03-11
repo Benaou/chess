@@ -25,13 +25,17 @@ const WHITE_ROOK = 0x2657;
 const WHITE_BISHIP = 0x2658;
 const WHITE_KNIGHT = 0x2659;
 const WHITE_PAWN = 0x2660;
+const BLACK_LOW = 0x4;
+const BLACK_HIGH = 0x9;
 
-const WHITE_KING = 0x265A;
-const WHITE_QUEEN = 0x265B;
-const WHITE_ROOK = 0x265C;
-const WHITE_BISHIP = 0x265D;
-const WHITE_KNIGHT = 0x265E;
-const WHITE_PAWN = 0x265F;
+const BLACK_KING = 0x265A;
+const BLACK_QUEEN = 0x265B;
+const BLACK_ROOK = 0x265C;
+const BLACK_BISHIP = 0x265D;
+const BLACK_KNIGHT = 0x265E;
+const BLACK_PAWN = 0x265F;
+const BLACK_LOW = 0xA;
+const BLACK_HIGH = 0xF;
 
 
 //Helper functions that don't need to be exported
@@ -53,11 +57,11 @@ function piece2notation(pieceId) {
 }
 
 function isWhite(pieceId) {
-	return (pieceId >= 0x4) && (pieceId <= 0x9);
+	return (pieceId >= WHITE_LOW) && (pieceId <= WHITE_HIGH);
 }
 
 function isBlack(pieceId) {
-	return (pieceId >= 0xA) && (pieceId <= 0xF);
+	return (pieceId >= BLACK_LOW) && (pieceId <= BLACK_HIGH);
 }
 
 function getColor(pieceId) {
