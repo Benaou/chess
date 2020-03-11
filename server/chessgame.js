@@ -19,6 +19,20 @@ Unicode
 Pieces are encoded by the last hexadecimal digit for simplicity (add 0x2650 to get unicode in chess client)
 */
 
+const WHITE_KING = 0x2654;
+const WHITE_QUEEN = 0x2655;
+const WHITE_ROOK = 0x2657;
+const WHITE_BISHIP = 0x2658;
+const WHITE_KNIGHT = 0x2659;
+const WHITE_PAWN = 0x2660;
+
+const WHITE_KING = 0x265A;
+const WHITE_QUEEN = 0x265B;
+const WHITE_ROOK = 0x265C;
+const WHITE_BISHIP = 0x265D;
+const WHITE_KNIGHT = 0x265E;
+const WHITE_PAWN = 0x265F;
+
 
 //Helper functions that don't need to be exported
 
