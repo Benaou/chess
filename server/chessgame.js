@@ -147,17 +147,17 @@ module.exports = class ChessGame {
 	}
 	
 	whiteCheck(board) {
-		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==WHITE_LOW);
+		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==WHITE_KING);
 	}
 
 	blackCheck(board) {
-		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==BLACK_LOW));
+		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==BLACK_KING));
 	}
 	
 	getLegalMoves(boardX, boardY, board) {
 		let boardId = getBoardId(boardX, boardY);
 		let moves = this.generateMoves(boardX, boardY, board);
-		if(moves.includes(62) && boardId==60 && board[boardId]==WHITE_LOW) { //white king castling
+		if(moves.includes(62) && boardId==60 && board[boardId]==WHITE_KING) { //white king castling
 			if(this.getAllMoves(boardState)
 				.filter( (_,index) => isBlack(board[index]) )
 				.some( (moves) => moves.some( (move) => [60,61,62].includes(move)) )
@@ -165,7 +165,7 @@ module.exports = class ChessGame {
 				moves = moves.filter( (id) => id!=62 );
 			}
 		}
-		if(moves.includes(58) && boardId==60 && board[boardId]==WHITE_LOW) { //white king castling on queen's side
+		if(moves.includes(58) && boardId==60 && board[boardId]==WHITE_KING) { //white king castling on queen's side
 			if(this.getAllMoves(boardState)
 				.filter( (_,index) => isBlack(board[index]) )
 				.some( (moves) => moves.some( (move) => [58,59,60].includes(move)) )
@@ -173,7 +173,7 @@ module.exports = class ChessGame {
 				moves = moves.filter( (id) => id!=58 );
 			}
 		}
-		if(moves.includes(6) && boardId==4 && board[boardId]==BLACK_LOW) { //black king castling
+		if(moves.includes(6) && boardId==4 && board[boardId]==BLACK_KING) { //black king castling
 			if(this.getAllMoves(boardState)
 				.filter( (_,index) => isWhite(board[index]) )
 				.some( (moves) => moves.some( (move) => [4,5,6].includes(move)) )
@@ -181,7 +181,7 @@ module.exports = class ChessGame {
 				moves = moves.filter( (id) => id!=6 );
 			}
 		}
-		if(moves.includes(2) && boardId==4 && board[boardId]==BLACK_LOW) { //black king castling on queen's side
+		if(moves.includes(2) && boardId==4 && board[boardId]==BLACK_KING) { //black king castling on queen's side
 			if(this.getAllMoves(boardState)
 				.filter( (_,index) => isWhite(board[index]) )
 				.some( (moves) => moves.some( (move) => [2,3,4].includes(move)) )
@@ -448,7 +448,7 @@ module.exports = class ChessGame {
 				}
 			}
 			break;
-		case BLACK_LOW: //black king
+		case BLACK_KING: //black king
 			for(let dir=0; dir<4; dir++) {
 				for(let sign=-1; sign<=1; sign+=2) {
 					let direction = [[0,sign],[sign,sign],[sign,0],[sign,-sign]];
@@ -466,17 +466,17 @@ module.exports = class ChessGame {
 				}
 			}
 			if(board[5]==EMPTY_SPACE && board[6]==EMPTY_SPACE && board[7]==BLACK_ROOK) { //condition for castling on right
-				if(!this.turnLog.some( (move) => (move.boardIds[0]==7 && move.oldPieces[0]==BLACK_ROOK) || move.oldPieces[0]==BLACK_LOW)) { //rook and king hasn't moved already
+				if(!this.turnLog.some( (move) => (move.boardIds[0]==7 && move.oldPieces[0]==BLACK_ROOK) || move.oldPieces[0]==BLACK_KING)) { //rook and king hasn't moved already
 					moves.push(6);
 				}
 			}
 			if(board[0]==BLACK_ROOK && board[1]==EMPTY_SPACE && board[2]==EMPTY_SPACE && board[3]==EMPTY_SPACE) {
-				if(!this.turnLog.some( (move) => (move.boardIds[0]==0 && move.oldPieces[0]==BLACK_ROOK) || move.oldPieces[0]==BLACK_LOW)) { //rook and king hasn't moved already
+				if(!this.turnLog.some( (move) => (move.boardIds[0]==0 && move.oldPieces[0]==BLACK_ROOK) || move.oldPieces[0]==BLACK_KING)) { //rook and king hasn't moved already
 					moves.push(2);
 				}
 			}
 			break;
-		case WHITE_LOW: //white king
+		case WHITE_KING: //white king
 			for(let dir=0; dir<4; dir++) {
 				for(let sign=-1; sign<=1; sign+=2) {
 					let direction = [[0,sign],[sign,sign],[sign,0],[sign,-sign]];
@@ -494,12 +494,12 @@ module.exports = class ChessGame {
 				}
 			}
 			if(board[61]==EMPTY_SPACE && board[62]==EMPTY_SPACE && board[63]==WHITE_ROOK) { //condition for castling on right
-				if(!this.turnLog.some( (move) => (move.boardIds[0]==63 && move.oldPieces[0]==WHITE_ROOK) || move.oldPieces[0]==WHITE_LOW)) { //rook and king hasn't moved already
+				if(!this.turnLog.some( (move) => (move.boardIds[0]==63 && move.oldPieces[0]==WHITE_ROOK) || move.oldPieces[0]==WHITE_KING)) { //rook and king hasn't moved already
 					moves.push(62);
 				}
 			}
 			if(board[56]==WHITE_ROOK && board[57]==EMPTY_SPACE && board[58]==EMPTY_SPACE && board[59]==EMPTY_SPACE) {
-				if(!this.turnLog.some( (move) => (move.boardIds[0]==56 && move.oldPieces[0]==WHITE_ROOK) || move.oldPieces[0]==WHITE_LOW)) { //rook and king hasn't moved already
+				if(!this.turnLog.some( (move) => (move.boardIds[0]==56 && move.oldPieces[0]==WHITE_ROOK) || move.oldPieces[0]==WHITE_KING)) { //rook and king hasn't moved already
 					moves.push(58);
 				}
 			}
