@@ -80,7 +80,7 @@ function drawPieces(board=boardState) {
 	for(var i=0; i<64; i++) {
 		let id = board[i];
 		[boardX,boardY] = getBoardCoord(i);
-		ctx.fillText(String.fromCharCode(id?(0x2650+id):0x20), size*boardX, vOffset+size*boardY);
+		ctx.fillText(String.fromCharCode(id?id:0x20), size*boardX, vOffset+size*boardY);
 	}
 }
 
