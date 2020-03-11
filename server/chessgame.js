@@ -25,8 +25,8 @@ const WHITE_ROOK = 0x2657;
 const WHITE_BISHIP = 0x2658;
 const WHITE_KNIGHT = 0x2659;
 const WHITE_PAWN = 0x2660;
-const BLACK_LOW = 0x4;
-const BLACK_HIGH = 0x9;
+const WHITE_LOW = 0x4;
+const WHITE_HIGH = 0x9;
 
 const BLACK_KING = 0x265A;
 const BLACK_QUEEN = 0x265B;
@@ -145,7 +145,7 @@ module.exports = class ChessGame {
 	}
 	
 	whiteCheck(board) {
-		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==0x4));
+		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==0x4);
 	}
 
 	blackCheck(board) {
