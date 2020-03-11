@@ -19,21 +19,21 @@ Unicode
 Pieces are encoded by the last hexadecimal digit for simplicity (add 0x2650 to get unicode in chess client)
 */
 
-const EMPTY_SPOT = 0x0;
+const EMPTY_SPACE = 0x0;
 
 const WHITE_KING = 0x2654;
 const WHITE_QUEEN = 0x2655;
-const WHITE_ROOK = 0x2657;
-const WHITE_BISHIP = 0x2658;
-const WHITE_KNIGHT = 0x2659;
-const WHITE_PAWN = 0x2660;
+const WHITE_ROOK = 0x2656;
+const WHITE_BISHOP = 0x2657;
+const WHITE_KNIGHT = 0x2658;
+const WHITE_PAWN = 0x2659;
 const WHITE_LOW = WHITE_KING;
 const WHITE_HIGH = WHITE_PAWN;
 
 const BLACK_KING = 0x265A;
 const BLACK_QUEEN = 0x265B;
 const BLACK_ROOK = 0x265C;
-const BLACK_BISHIP = 0x265D;
+const BLACK_BISHOP = 0x265D;
 const BLACK_KNIGHT = 0x265E;
 const BLACK_PAWN = 0x265F;
 const BLACK_LOW = BLACK_KING;
@@ -147,7 +147,7 @@ module.exports = class ChessGame {
 	}
 	
 	whiteCheck(board) {
-		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==WHITE_KING);
+		return this.getAllMoves(board).some(m=>m.some(id=>board[id]==WHITE_KING));
 	}
 
 	blackCheck(board) {
