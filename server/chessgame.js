@@ -158,7 +158,7 @@ module.exports = class ChessGame {
 		let boardId = getBoardId(boardX, boardY);
 		let moves = this.generateMoves(boardX, boardY, board);
 		if(moves.includes(62) && boardId==60 && board[boardId]==WHITE_KING) { //white king castling
-			if(this.getAllMoves(boardState)
+			if(this.getAllMoves(board)
 				.filter( (_,index) => isBlack(board[index]) )
 				.some( (moves) => moves.some( (move) => [60,61,62].includes(move)) )
 			) { //ensure king doesn't cross any attacked spaces (and isn't already in check)
@@ -166,7 +166,7 @@ module.exports = class ChessGame {
 			}
 		}
 		if(moves.includes(58) && boardId==60 && board[boardId]==WHITE_KING) { //white king castling on queen's side
-			if(this.getAllMoves(boardState)
+			if(this.getAllMoves(board)
 				.filter( (_,index) => isBlack(board[index]) )
 				.some( (moves) => moves.some( (move) => [58,59,60].includes(move)) )
 			) { //ensure king doesn't cross any attacked spaces (and isn't already in check)
@@ -174,7 +174,7 @@ module.exports = class ChessGame {
 			}
 		}
 		if(moves.includes(6) && boardId==4 && board[boardId]==BLACK_KING) { //black king castling
-			if(this.getAllMoves(boardState)
+			if(this.getAllMoves(board)
 				.filter( (_,index) => isWhite(board[index]) )
 				.some( (moves) => moves.some( (move) => [4,5,6].includes(move)) )
 			) { //ensure king doesn't cross any attacked spaces (and isn't already in check)
@@ -182,7 +182,7 @@ module.exports = class ChessGame {
 			}
 		}
 		if(moves.includes(2) && boardId==4 && board[boardId]==BLACK_KING) { //black king castling on queen's side
-			if(this.getAllMoves(boardState)
+			if(this.getAllMoves(board)
 				.filter( (_,index) => isWhite(board[index]) )
 				.some( (moves) => moves.some( (move) => [2,3,4].includes(move)) )
 			) { //ensure king doesn't cross any attacked spaces (and isn't already in check)
