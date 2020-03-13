@@ -153,6 +153,9 @@ Sec-WebSocket-Accept: "+crypto.createHash('sha1').update(data.toString()
 							'data':game.getBoard()
 						}
 					);
+				} else if(message.type == 'boardid') {
+					console.log(`client #${c.id} request to join boardid: ${message.data}`);
+					//implement if boardid exists and creating one if not
 				}
 			}
 		}
@@ -169,6 +172,7 @@ server.listen(8124, () => {
 
 
 // ------------------ Web server implementation ----------------//
+//Uncomment the code if you want to create a specific structure for where to have the chess game provided
 http.createServer((request, response) => { //simple http web server to host the client page (port 80)
 	console.log(`[http] Received web request from ${response.socket.remoteAddress} for ${request.url}`);
 	request.on('error', (err) => {
@@ -177,14 +181,16 @@ http.createServer((request, response) => { //simple http web server to host the 
 	response.on('error', (err) => {
 		console.error(err);
 	});
-	if(request.url === '/') {
-		fs.readFile('../client/multiplayer_chess.html', (err, data) => {
-			response.writeHead(200, {'Content-Type': 'text/html'});
-			response.write(data);
-			response.end();
-		});
+	//if(request.url === '/') {
+	fs.readFile('../client/multiplayer_chess.html', (err, data) => {
+		response.writeHead(200, {'Content-Type': 'text/html'});
+		response.write(data);
+		response.end();
+	});
+	/*
 	} else {
 		response.statusCode = 404;
 		response.end();
 	}
+	*/
 }).listen(80);
