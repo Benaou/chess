@@ -115,9 +115,20 @@ window.onload = function() {
 	boardState = new Array(81);
 	boardState.fill(0);
 	drawBoard();
-	ws = new WebSocket('ws://localhost:8124/');
+	ws = new WebSocket('ws://'+window.location.hostname+':8124/');
 	ws.onerror = function(e) {
 		console.error(e);
+	}
+	ws.onopen = (e) => {
+		//if(window.location.search) 
+		let id = window.location.search.split('id=')[1].split('&')[0];
+		ws.send(
+			JSON.stringify(
+				{'type':'boardid',
+				'data':id
+				}
+			)
+		);
 	}
 	ws.onmessage = (e) => {
 		console.log(e.data);
@@ -131,6 +142,8 @@ window.onload = function() {
 				[x,y] = getBoardCoord(boardId);
 				highlightSpot(x,y);
 			}
+		} else if(message.type == 'boardid') {
+			window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + "?id=" + message.data;
 		}
 	}
 	canvas.addEventListener('mousedown', handleClick);
