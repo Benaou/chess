@@ -109,6 +109,10 @@ module.exports = class ChessGame {
 		return this.legalMoves;
 	}
 	
+	getTurnInfo() {
+		return this.turnInfo;
+	}
+	
 	getBoard() {
 		return this.board;
 	}
