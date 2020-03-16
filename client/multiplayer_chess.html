@@ -120,15 +120,23 @@ window.onload = function() {
 		console.error(e);
 	}
 	ws.onopen = (e) => {
-		//if(window.location.search) 
-		let id = window.location.search.split('id=')[1].split('&')[0];
-		ws.send(
-			JSON.stringify(
-				{'type':'boardid',
-				'data':id
-				}
-			)
-		);
+		if(window.location.search.includes('id=')) { 
+			let id = window.location.search.split('id=')[1].split('&')[0];
+			ws.send(
+				JSON.stringify(
+					{'type':'boardStateId',
+					'data':id
+					}
+				)
+			);
+		} else {
+			ws.send(
+				JSON.stringify(
+					{'type':'boardStateId',
+					'data':'new'}
+				)
+			);
+		}
 	}
 	ws.onmessage = (e) => {
 		console.log(e.data);
@@ -142,7 +150,7 @@ window.onload = function() {
 				[x,y] = getBoardCoord(boardId);
 				highlightSpot(x,y);
 			}
-		} else if(message.type == 'boardid') {
+		} else if(message.type == 'boardStateId') {
 			window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + "?id=" + message.data;
 		}
 	}
