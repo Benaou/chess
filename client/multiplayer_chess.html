@@ -112,7 +112,7 @@ window.onload = function() {
 	canvas.height = size*8;
 	//document.getElementById('log').style.height = canvas.height+"px";
 	ctx = canvas.getContext('2d');
-	boardState = new Array(81);
+	boardState = new Array(64);
 	boardState.fill(0);
 	drawBoard();
 	ws = new WebSocket('ws://'+window.location.hostname+':8124/');
