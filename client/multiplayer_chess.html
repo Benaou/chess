@@ -115,7 +115,7 @@ window.onload = function() {
 	boardState = new Array(64);
 	boardState.fill(0);
 	drawBoard();
-	ws = new WebSocket('ws://'+window.location.hostname+':F24/');
+	ws = new WebSocket('ws://'+window.location.hostname+':8124/');
 	ws.onerror = function(e) {
 		console.error(e);
 	}
