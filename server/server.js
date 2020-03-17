@@ -84,7 +84,7 @@ function createNewBoard(connObj) {
 	let takenIds = Object.keys(gameStateObj);
 	do { //Not worried about multiple collisions slowing this part down, there's 900000 possible IDs
 		boardStateId = 100000+Math.floor(900000*Math.random());
-	} while(takenIds.includes(boardStateId));
+	} while(takenIds.includes(boardStateId.toString()));
 	gameStateObj[boardStateId] = {
 		'connArr': [],
 		'game': new ChessGame(),
@@ -105,6 +105,10 @@ function createNewBoard(connObj) {
 }
 
 function joinBoard(connObj, boardStateId) {
+	if(!Object.keys(gameStateObj).includes(boardStateId.toString())) {
+		createNewBoard(connObj);
+		return;
+	}
 	connObj.boardStateId = boardStateId;
 	gameStateObj[boardStateId].connArr.push(connObj);
 	connObj.connArrId = gameStateObj[boardStateId].connArrId++;
@@ -149,18 +153,17 @@ Sec-WebSocket-Accept: "+crypto.createHash('sha1').update(data.toString()
 				console.log(`[data] client #${c.id} sent opcode 8 (close connection)`);
 				delete socketArr[c.id];
 				validIdArr = validIdArr.filter( x => x!=c.id );
-				let connArr = gameStateObj[c.boardStateId].connArr;
 				c.end();
-				connArr.splice(c.connArrId);
-				gameStateObj[c.boardStateId].connArrId--;
-				/* if(!connArr[0] && !connArr[1]) { //both main players are gone!!
-					for(connObj of connArr) {
-						if(connObj!=undefined) {
-							connObj.end();
-						}
+				if(gameStateObj[c.boardStateId]) {
+					let connArr = gameStateObj[c.boardStateId].connArr;
+					connArr.splice(c.connArrId,1);
+					gameStateObj[c.boardStateId].connArrId--;
+					console.log(`[data] decremented connArrId: ${gameStateObj[c.boardStateId].connArrId} from boardStateId: ${c.boardStateId}`);
+					if(gameStateObj[c.boardStateId].connArrId == 0) { //no connections, just kill the game board
+						delete gameStateObj[c.boardStateId];
+						console.log(`[data] deleting ${c.boardStateId}`);
 					}
-					delete gameStateObj[c.boardStateId];
-				} */
+				}
 			} else { //real data, not close connection
 				message = JSON.parse(decode(data));
 				console.log(message);
