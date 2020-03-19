@@ -1,4 +1,6 @@
-CTYPE html>
+
+<CTYPE html>
+
 
 <html>
 <head>
@@ -81,7 +83,7 @@ window.onload = function() {
         boardState = new Array(boardDimension * boardDimension);
         boardState.fill(0);
         drawBoard();
-        ws = new WebSocket('ws://' + window.location.hostname + WebSocketPort);
+        ws = new WebSocket('ws://' + window.location.hostname + ':' + GameSessionPort);
         ws.onerror = function(e) {
                 console.error(e);
         }
