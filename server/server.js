@@ -2,75 +2,19 @@ const http = require('http');
 const net = require('net');
 const crypto = require('crypto');
 const fs = require('fs');
+
+// Rules - domain logic
 const ChessGame = require('./chessgame.js');
 
-// ------------------ WebSocket implementation ----------------//
+// Websocket implementation
+const encode = require('../lib/encoder.js');
+const decode = require('../lib/decoder.js');
 
-function decode(buffer) { //Decode WebSocket packets
-	if(buffer[0]&0x80){} //first bit = FIN bit
-	switch(buffer[0]&0xF) { //opcode
-		case 0: //continuation frame
-			//console.log("OPCODE 0x0: Continuation frame");
-			break;
-		case 1: //text frame
-			//console.log("OPCODE 0x1: Text frame");
-			break;
-		case 2: //binary frame
-			//console.log("OPCODE 0x2: Binary frame");
-			break;
-		case 8: //close connection
-			//console.log("OPCODE 0x8: Close connection");
-			break;
-		case 9: //ping, send back opcode 10 with same payload to pong
-			//console.log("OPCODE 0x9: Ping");
-			break;
-		case 10: //pong
-			//console.log("OPCODE 0xA: Pong");
-			break;
-		default: //all other codes are unused
-			break;
-	}
-	if(buffer[1]&0x80) {
-		//console.log("Mask bit enabled");
-	} //mask bit
+// Handling ports
+const newPort = require('../lib/inputHandler.js');
+const WebSocketPort = 8124;
+const GameSessionPort = newPort() || 80;
 
-	let length = buffer[1]&0x7F; //payload length if it's less than 126
-	//console.log("Payload length: " + length.toString());
-	let index = 2;
-	if(length == 126) { //payload length is 126, meaning read the next 16 bits for the length
-		length = (buffer[2]<<8)+buffer[3];
-		index += 2;
-		//console.log("Actual length after 126 case: " + length.toString());
-	} else if(length == 127) {
-		length = 0;
-		for(let i=0; i<8; i++)
-			length += buffer[2+i]<<(8*(7-i));
-		index += 8;
-		//console.log("Actual length after 127 case: " + length.toString());
-	}
-	var MASK = buffer.slice(index,index+4);
-	var ENCODED = buffer.slice(index+4,index+4+length);
-	//console.log("MASK: " + JSON.stringify(MASK));
-	//console.log("ENCODED: " + JSON.stringify(ENCODED));
-	var DECODED = new Array(length);
-	DECODED.fill(0);
-	for(var i = 0; i< ENCODED.length; i++)
-		DECODED[i] = ENCODED[i] ^ MASK[i % 4];
-	//console.log("DECODED: " + JSON.stringify(DECODED));
-	return DECODED.map(c=>String.fromCharCode(c)).join('');
-}
-
-function encode(data) { //Encode WebSocket packets
-	let length = data.length;
-	let charCodeArray = data.split("").map(c => c.charCodeAt(0));
-	if(length < 126) {
-		return Buffer.from([0x81, length, ...charCodeArray]);
-	} else if(length <= 2**16) { //set the length to 126 and set the next two bytes as the actual length
-		return Buffer.from([0x81, 126, (0xFF00 & length)>>8, 0xFF & length, ...charCodeArray]);
-	} else {
-		//for the implemenation of this chess server, I will ensure it never gets this large
-	}
-}
 
 var socketArr = [];
 var socketId = 0;
@@ -217,12 +161,13 @@ Sec-WebSocket-Accept: "+crypto.createHash('sha1').update(data.toString()
 server.on('error', (err) => {
 	throw err;
 });
-server.listen(8124, () => {
-	console.log('[net] server bound on port 8124');
+
+server.listen(WebSocketPort, () => { 
+	console.log(`Port: ${WebSocketPort} -- [net] Websocket server `);
 });
 
-
 // ------------------ Web server implementation ----------------//
+
 //Uncomment the code if you want to create a specific structure for where to have the chess game provided
 http.createServer((request, response) => { //simple http web server to host the client page (port 80)
 	console.log(`[http] Received web request from ${response.socket.remoteAddress} for ${request.url}`);
@@ -244,4 +189,5 @@ http.createServer((request, response) => { //simple http web server to host the 
 		response.end();
 	}
 	*/
-}).listen(80);
+}).listen(GameSessionPort, () => {console.log(`Port: ${GameSessionPort} -- [http] Game session server `); });
+
