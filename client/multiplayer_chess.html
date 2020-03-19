@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+CTYPE html>
 
 <html>
 <head>
@@ -12,115 +12,115 @@ var canvas, ctx, ws, boardState;
 var size = 80;
 
 function getBoardId(boardX, boardY) {
-	return boardX+boardDimension*boardY;
+        return boardX+boardDimension*boardY;
 }
 
 function getBoardCoord(boardId) {
-	return [boardId % boardDimension, Math.floor(boardId/boardDimension)];
+        return [boardId % boardDimension, Math.floor(boardId/boardDimension)];
 }
 
 function drawBoard() {
-	ctx.globalAlpha = 1;
-	for(let i=0; i<boardDimension; i++) {
-		for(let j=0; j<boardDimension; j++) {
-			if((i+j)%2) {
-				ctx.fillStyle='lightgray';
-			} else {
-				ctx.fillStyle='white';
-			}
-			ctx.fillRect(i*size, j*size, size, size);
-		}
-		//ctx.fillStyle='black';
-		//ctx.fillText(String.fromCharCode(65+i), i*size, 9*size); 
-	}
-	ctx.fillStyle='black';
-	ctx.strokeRect(0,0,boardDimension*size,boardDimension*size);
-	drawPieces();
+        ctx.globalAlpha = 1;
+        for(let i=0; i<boardDimension; i++) {
+                for(let j=0; j<boardDimension; j++) {
+                        if((i+j)%2) {
+                                ctx.fillStyle='lightgray';
+                        } else {
+                                ctx.fillStyle='white';
+                        }
+                        ctx.fillRect(i*size, j*size, size, size);
+                }
+                //ctx.fillStyle='black';
+                //ctx.fillText(String.fromCharCode(65+i), i*size, 9*size);
+        }
+        ctx.fillStyle='black';
+        ctx.strokeRect(0,0,boardDimension*size,boardDimension*size);
+        drawPieces();
 }
 
 function drawPieces(board=boardState) {
-	var vOffset = Math.floor(size*.866); //used to center the chess unicode onto the board
-	ctx.globalAlpha = 1;
-	ctx.fillStyle="black";
-	ctx.font = size + 'px serif';
-	for(var i=0; i<boardDimension*boardDimension; i++) {
-		let id = board[i];
-		[boardX,boardY] = getBoardCoord(i);
-		ctx.fillText(String.fromCharCode(id?id:0x20), size*boardX, vOffset+size*boardY);
-	}
+        var vOffset = Math.floor(size*.866); //used to center the chess unicode onto the board
+        ctx.globalAlpha = 1;
+        ctx.fillStyle="black";
+        ctx.font = size + 'px serif';
+        for(var i=0; i<boardDimension*boardDimension; i++) {
+                let id = board[i];
+                [boardX,boardY] = getBoardCoord(i);
+                ctx.fillText(String.fromCharCode(id?id:0x20), size*boardX, vOffset+size*boardY);
+        }
 }
 
 function highlightSpot(x,y) {
-	ctx.globalAlpha = 0.5;
-	ctx.fillStyle="yellow";
-	ctx.fillRect(x*size, y*size, size, size);
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle="yellow";
+        ctx.fillRect(x*size, y*size, size, size);
 }
 
 function handleClick(e) {
-	let boardX = Math.floor(e.offsetX/size);
-	let boardY = Math.floor(e.offsetY/size);
-	if(e.which == 1) { //left click
-		drawBoard();
-		boardId = getBoardId(boardX,boardY);
-		ws.send(
-				JSON.stringify(
-					{'type':'click',
-					'data':boardId
-					}
-					)
-		       );
-	}
+        let boardX = Math.floor(e.offsetX/size);
+        let boardY = Math.floor(e.offsetY/size);
+        if(e.which == 1) { //left click
+                drawBoard();
+                boardId = getBoardId(boardX,boardY);
+                ws.send(
+                                JSON.stringify(
+                                        {'type':'click',
+                                        'data':boardId
+                                        }
+                                        )
+                       );
+        }
 }
 
 window.onload = function() {
-	canvas = document.getElementById('canvas');
-	canvas.width = size*boardDimension;
-	canvas.height = size*boardDimension;
-	//document.getElementById('log').style.height = canvas.height+"px";
-	ctx = canvas.getContext('2d');
-	boardState = new Array(boardDimension * boardDimension);
-	boardState.fill(0);
-	drawBoard();
-	ws = new WebSocket('ws://' + window.location.hostname + WebSocketPort);
-	ws.onerror = function(e) {
-		console.error(e);
-	}
-	ws.onopen = (e) => {
-		if(window.location.search.includes('id=')) { 
-			let id = window.location.search.split('id=')[1].split('&')[0];
-			ws.send(
-					JSON.stringify(
-						{'type':'boardStateId',
-						'data':id
-						}
-						)
-			       );
-		} else {
-			ws.send(
-					JSON.stringify(
-						{'type':'boardStateId',
-						'data':'new'}
-						)
-			       );
-		}
-	}
-	ws.onmessage = (e) => {
-		console.log(e.data);
-		message = JSON.parse(e.data);
-		if(message.type == 'board') {
-			boardState = message.data;
-			drawBoard();
-		} else if(message.type == 'highlight') {
-			let x,y;
-			for(boardId of message.data) {
-				[x,y] = getBoardCoord(boardId);
-				highlightSpot(x,y);
-			}
-		} else if(message.type == 'boardStateId') {
-			window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + "?id=" + message.data;
-		}
-	}
-	canvas.addEventListener('mousedown', handleClick);
+        canvas = document.getElementById('canvas');
+        canvas.width = size*boardDimension;
+        canvas.height = size*boardDimension;
+        //document.getElementById('log').style.height = canvas.height+"px";
+        ctx = canvas.getContext('2d');
+        boardState = new Array(boardDimension * boardDimension);
+        boardState.fill(0);
+        drawBoard();
+        ws = new WebSocket('ws://' + window.location.hostname + WebSocketPort);
+        ws.onerror = function(e) {
+                console.error(e);
+        }
+        ws.onopen = (e) => {
+                if(window.location.search.includes('id=')) {
+                        let id = window.location.search.split('id=')[1].split('&')[0];
+                        ws.send(
+                                        JSON.stringify(
+                                                {'type':'boardStateId',
+                                                'data':id
+                                                }
+                                                )
+                               );
+                } else {
+                        ws.send(
+                                        JSON.stringify(
+                                                {'type':'boardStateId',
+                                                'data':'new'}
+                                                )
+                               );
+                }
+        }
+        ws.onmessage = (e) => {
+                console.log(e.data);
+                message = JSON.parse(e.data);
+                if(message.type == 'board') {
+                        boardState = message.data;
+                        drawBoard();
+                } else if(message.type == 'highlight') {
+                        let x,y;
+                        for(boardId of message.data) {
+                                [x,y] = getBoardCoord(boardId);
+                                highlightSpot(x,y);
+                        }
+                } else if(message.type == 'boardStateId') {
+                        window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + "?id=" + message.data;
+                }
+        }
+        canvas.addEventListener('mousedown', handleClick);
 }
 
 </script>
@@ -129,3 +129,4 @@ window.onload = function() {
 <canvas id="canvas" style="float: left"></canvas><!--<iframe id="log" style="float: left"></iframe>-->
 </body>
 </html>
+

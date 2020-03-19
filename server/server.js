@@ -13,7 +13,7 @@ const decode = require('../lib/decoder.js');
 // Handling ports
 const newPort = require('../lib/inputHandler.js');
 const WebSocketPort = 8124;
-const GameSessionPort = newPort() || 8080;
+const GameSessionPort = newPort() || 80;
 
 
 var socketArr = [];
