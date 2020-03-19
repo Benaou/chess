@@ -4,59 +4,25 @@
 <head>
 <title>Chess</title>
 <script>
-/*
 
-TODO:
-- Mull over how to resolve scenario where using en passant can resolve check
-- Pawn upgrades
-
-List of notation:
-K = King
-Q = Queen
-B = Bishop
-R = Rook
-N = Knight
-
-x = takes or captures
-+ = checked
-(not equals symbol) = checkmate
-=Q  = pawn promotion
-O-O = castles on King's side
-O-O-O = castles on Queen's side
-e.p. = en passant
-
-Unicode 
-2654 = white king
-2655 = white queen
-2656 = white rook
-2657 = white bishop
-2658 = white knight
-2659 = white pawn
-
-265A = black king
-265B = black queen
-265C = black rook
-265D = black bishop
-265E = black knight
-265F = black pawn
-
-*/
+GameSessionPort = 8124;
+boardDimension = 8;
 
 var canvas, ctx, ws, boardState;
 var size = 80;
 
 function getBoardId(boardX, boardY) {
-	return boardX+8*boardY;
+	return boardX+boardDimension*boardY;
 }
 
 function getBoardCoord(boardId) {
-	return [boardId%8, Math.floor(boardId/8)];
+	return [boardId % boardDimension, Math.floor(boardId/boardDimension)];
 }
 
 function drawBoard() {
 	ctx.globalAlpha = 1;
-	for(let i=0; i<8; i++) {
-		for(let j=0; j<8; j++) {
+	for(let i=0; i<boardDimension; i++) {
+		for(let j=0; j<boardDimension; j++) {
 			if((i+j)%2) {
 				ctx.fillStyle='lightgray';
 			} else {
@@ -68,7 +34,7 @@ function drawBoard() {
 		//ctx.fillText(String.fromCharCode(65+i), i*size, 9*size); 
 	}
 	ctx.fillStyle='black';
-	ctx.strokeRect(0,0,8*size,8*size);
+	ctx.strokeRect(0,0,boardDimension*size,boardDimension*size);
 	drawPieces();
 }
 
@@ -77,7 +43,7 @@ function drawPieces(board=boardState) {
 	ctx.globalAlpha = 1;
 	ctx.fillStyle="black";
 	ctx.font = size + 'px serif';
-	for(var i=0; i<64; i++) {
+	for(var i=0; i<boardDimension*boardDimension; i++) {
 		let id = board[i];
 		[boardX,boardY] = getBoardCoord(i);
 		ctx.fillText(String.fromCharCode(id?id:0x20), size*boardX, vOffset+size*boardY);
@@ -97,25 +63,25 @@ function handleClick(e) {
 		drawBoard();
 		boardId = getBoardId(boardX,boardY);
 		ws.send(
-			JSON.stringify(
-				{'type':'click',
-				'data':boardId
-				}
-			)
-		);
+				JSON.stringify(
+					{'type':'click',
+					'data':boardId
+					}
+					)
+		       );
 	}
 }
 
 window.onload = function() {
 	canvas = document.getElementById('canvas');
-	canvas.width = size*8;
-	canvas.height = size*8;
+	canvas.width = size*boardDimension;
+	canvas.height = size*boardDimension;
 	//document.getElementById('log').style.height = canvas.height+"px";
 	ctx = canvas.getContext('2d');
-	boardState = new Array(64);
+	boardState = new Array(boardDimension * boardDimension);
 	boardState.fill(0);
 	drawBoard();
-	ws = new WebSocket('ws://'+window.location.hostname+':8124/');
+	ws = new WebSocket('ws://' + window.location.hostname + WebSocketPort);
 	ws.onerror = function(e) {
 		console.error(e);
 	}
@@ -123,19 +89,19 @@ window.onload = function() {
 		if(window.location.search.includes('id=')) { 
 			let id = window.location.search.split('id=')[1].split('&')[0];
 			ws.send(
-				JSON.stringify(
-					{'type':'boardStateId',
-					'data':id
-					}
-				)
-			);
+					JSON.stringify(
+						{'type':'boardStateId',
+						'data':id
+						}
+						)
+			       );
 		} else {
 			ws.send(
-				JSON.stringify(
-					{'type':'boardStateId',
-					'data':'new'}
-				)
-			);
+					JSON.stringify(
+						{'type':'boardStateId',
+						'data':'new'}
+						)
+			       );
 		}
 	}
 	ws.onmessage = (e) => {

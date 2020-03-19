@@ -3,6 +3,10 @@ const net = require('net');
 const crypto = require('crypto');
 const fs = require('fs');
 const ChessGame = require('./chessgame.js');
+const newPort = require('../lib/inputHandler.js');
+const WebSocketPort = 8124;
+const GameSessionPort = newPort() || 8080;
+
 
 // ------------------ WebSocket implementation ----------------//
 
@@ -217,10 +221,10 @@ Sec-WebSocket-Accept: "+crypto.createHash('sha1').update(data.toString()
 server.on('error', (err) => {
 	throw err;
 });
-server.listen(8124, () => {
-	console.log('[net] server bound on port 8124');
-});
 
+server.listen(WebSocketPort, () => { 
+	console.log(`Port: ${WebSocketPort} -- [net] Websocket server `);
+});
 
 // ------------------ Web server implementation ----------------//
 //Uncomment the code if you want to create a specific structure for where to have the chess game provided
@@ -244,4 +248,5 @@ http.createServer((request, response) => { //simple http web server to host the 
 		response.end();
 	}
 	*/
-}).listen(80);
+}).listen(GameSessionPort, () => {console.log(`Port: ${GameSessionPort} -- [http] Game session server `); });
+
